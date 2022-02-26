@@ -1,0 +1,16 @@
+[Unit]
+Description=MLflow Tracking Server
+After=network.target
+
+[Service]
+Restart=on-failure
+RestartSec=30
+StandardOutput=file:/home/user/mlflow/mllogs/stdout.log
+StandardError=file:/home/user/mlflow/mllogs/stderr.log
+User=root
+Environment=HOSTNAME=192.168.0.107
+Environment=CONDA_PATH=/home/user/anaconda3
+ExecStart=/bin/bash -c 'PATH=${CONDA_PATH}/envs/mlflow_env/bin/:$PATH exec mlflow server --backend-store-uri postgresql://mlflow_user:mlflow@${HOSTNAME}/mlflow_db --default-artifact-root sftp://mlflow_user@${HOSTNAME}:/home/user/mlflow/mlruns -h ${HOSTNAME} -p 8000'
+
+[Install]
+WantedBy=multi-user.target
